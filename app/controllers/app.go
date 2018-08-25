@@ -2,6 +2,15 @@ package controllers
 
 import (
 	"github.com/revel/revel"
+	"fmt"
+	"io/ioutil"
+)
+
+const (
+	_      = iota
+	KB int = 1 << (10 * iota)
+	MB
+	GB
 )
 
 type App struct {
@@ -10,4 +19,24 @@ type App struct {
 
 func (c App) Index() revel.Result {
 	return c.Render()
+}
+
+func (c App) Upload(torrent []byte, folder string) revel.Result {
+	c.Validation.Required(torrent)
+	c.Validation.MaxSize(torrent, 2*MB).
+		Message("File cannot be larger than 2MB")
+
+	if c.Validation.HasErrors() {
+		c.Validation.Keep()
+		c.FlashParams()
+		return c.Redirect((*App).Index)
+	}
+
+	err := ioutil.WriteFile(fmt.Sprintf("/tmp/%s/%s", folder, c.Params.Files["torrent"][0].Filename), torrent, 0644)
+	if err != nil {
+        panic(err)
+    }
+
+	c.Flash.Success(fmt.Sprintf("Successfully uploaded to %s!", folder))
+	return c.Redirect((*App).Index)
 }
