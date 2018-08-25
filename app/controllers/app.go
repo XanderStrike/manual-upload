@@ -4,6 +4,7 @@ import (
 	"github.com/revel/revel"
 	"fmt"
 	"io/ioutil"
+	"regexp"
 )
 
 const (
@@ -26,13 +27,16 @@ func (c App) Upload(torrent []byte, folder string) revel.Result {
 	c.Validation.MaxSize(torrent, 2*MB).
 		Message("File cannot be larger than 2MB")
 
+	c.Validation.Required(folder)
+	c.Validation.Match(folder, regexp.MustCompile("(movies|music|tv|misc)"))
+
 	if c.Validation.HasErrors() {
 		c.Validation.Keep()
 		c.FlashParams()
 		return c.Redirect((*App).Index)
 	}
 
-	err := ioutil.WriteFile(fmt.Sprintf("/tmp/%s/%s", folder, c.Params.Files["torrent"][0].Filename), torrent, 0644)
+	err := ioutil.WriteFile(fmt.Sprintf("/watch/%s/%s", folder, c.Params.Files["torrent"][0].Filename), torrent, 0644)
 	if err != nil {
         panic(err)
     }
