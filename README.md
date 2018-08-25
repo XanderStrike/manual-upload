@@ -1,43 +1,33 @@
-# Welcome to Revel
+# manual-upload
 
-A high-productivity web framework for the [Go language](http://www.golang.org/).
+A profoundly simple approach to adding torrents to seedboxes.
 
+While I might use CouchPotato, [GazelleUI](https://github.com/XanderStrike/GazelleUI), and SickRage for most of my torrents, I'll occasionally want to manually add specific ones. My previous workflow of scping them into the correct folder was getting tired, and I wanted to learn Go, so here we are.
 
-### Start the web server:
+This tool makes the assumption that you have a watch folder with the following directories: `movies`, `music`, `tv`, and `misc`. That's how I organize it, and that ought to be good enough for everybody ;)
 
-   revel run myapp
+### installation
 
-### Go to http://localhost:9000/ and you'll see:
+If you've got it, [Docker](https://www.docker.com/) is the best way to run this project.
 
-    "It works"
+    docker create \
+      --name=manual-upload \
+      --restart always \
+      -v <path to watchfolder>:/watch \
+      -e PGID=1000 -e PUID=1000  \
+      -e TZ=America/Los_Angeles \
+      -p 8080:8080 \
+      xanderstrike/manual-upload
 
-## Code Layout
+* Set the watchfolder to a directory watched by your torrent client
+* PGID and PUID can be found by running `id` in a terminal
+* Timezone is your timezone
+* Configure the port by setting `8080:8080` to `<your port>:8080`
 
-The directory structure of a generated Revel application:
+Run with:
 
-    conf/             Configuration directory
-        app.conf      Main app configuration file
-        routes        Routes definition file
+    docker start manual-upload
 
-    app/              App sources
-        init.go       Interceptor registration
-        controllers/  App controllers go here
-        views/        Templates directory
+### license
 
-    messages/         Message files
-
-    public/           Public static assets
-        css/          CSS files
-        js/           Javascript files
-        images/       Image files
-
-    tests/            Test suites
-
-
-## Help
-
-* The [Getting Started with Revel](http://revel.github.io/tutorial/gettingstarted.html).
-* The [Revel guides](http://revel.github.io/manual/index.html).
-* The [Revel sample apps](http://revel.github.io/examples/index.html).
-* The [API documentation](https://godoc.org/github.com/revel/revel).
-
+MIT license
