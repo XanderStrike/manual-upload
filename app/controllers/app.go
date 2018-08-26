@@ -41,7 +41,7 @@ func (c App) Upload(torrent []byte, folder string) revel.Result {
 
     filename := c.Params.Files["torrent"][0].Filename
 
-    err := ioutil.WriteFile(fmt.Sprintf("/tmp/%s/%s", folder, filename), torrent, 0644)
+    err := ioutil.WriteFile(fmt.Sprintf("/watch/%s/%s", folder, filename), torrent, 0644)
     if err != nil { panic(err) }
 
     discord_url := os.Getenv("DISCORD_URL")
