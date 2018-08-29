@@ -25,6 +25,44 @@ func (c App) Index() revel.Result {
     return c.Render()
 }
 
+func (c App) Login() revel.Result {
+    delete(c.Session, "user")
+    return c.Render()
+}
+
+func (c App) DoLogin(username, password string) revel.Result {
+    user := os.Getenv("USERNAME")
+    pass := os.Getenv("PASSWORD")
+
+    if (username == user && password == pass) {
+        c.Session["user"] = user
+        c.Flash.Success("Successfully logged in.")
+        return c.Redirect((*App).Index)
+    }
+
+    c.Flash.Error("Incorrect username or password.")
+    return c.Redirect((*App).Login)
+}
+
+func (c App) CheckLogin() revel.Result {
+    user := os.Getenv("USERNAME")
+
+    if len(user) == 0 {
+        return nil
+    }
+
+    if c.Action == "App.Login" || c.Action == "App.DoLogin" {
+        return nil
+    }
+
+    if c.Session["user"] == user {
+        return nil
+    }
+
+    c.Flash.Error("You need to log in.")
+    return c.Redirect((*App).Login)
+}
+
 func (c App) Upload(torrent []byte, folder string) revel.Result {
     c.Validation.Required(torrent)
     c.Validation.MaxSize(torrent, 2*MB).
