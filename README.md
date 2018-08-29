@@ -17,6 +17,8 @@ If you've got it, [Docker](https://www.docker.com/) is the best way to run this 
       -e PGID=1000 -e PUID=1000  \
       -e TZ=America/Los_Angeles \
       -e DISCORD_URL=<discord webhook url> \
+      -e USERNAME=<username> \
+      -e PASSWORD=<password> \
       -p 8080:8080 \
       xanderstrike/manual-upload
 
@@ -24,6 +26,7 @@ If you've got it, [Docker](https://www.docker.com/) is the best way to run this 
 * PGID and PUID can be found by running `id` in a terminal
 * TZ is your timezone
 * DISCORD_URL is an optional parameter to enable discord notifications of new uploads
+* USERNAME and PASSWORD are optional authentication params
 * Configure the port by setting `8080:8080` to `<your port>:8080`
 
 Run with:
